@@ -1,0 +1,16 @@
+*.xccheckout
+*.moved-aside
+*.xcuserstate
+*.xcscmblueprint
+
+## Various settings
+**/xcuserdata/*
+
+## Obj-C/Swift specific
+*.hmap
+*.ipa
+
+**/fastlane/report.xml
+**/fastlane/test_output
+
+Pods/

@@ -1,0 +1,29 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Run iOS unit tests"
+  lane :tests do
+    run_tests(
+        workspace: "iosApp.xcworkspace",
+        devices: ["iPhone 7"],
+        derived_data_path: "../build"
+    )
+  end
+  desc "Run linting"
+  lane :lint do
+  swiftlint(
+    executable: './Pods/SwiftLint/swiftlint', 
+    mode: :lint,
+    config_file: '.swiftlint.yml',
+  )
+  end
+
+  desc "Run lint autocorrect"
+  lane :lint_autocorrect do
+    swiftlint(
+      mode: :autocorrect,
+      executable: './Pods/SwiftLint/swiftlint',
+      config_file: '.swiftlint.yml',
+    )
+  end
+end

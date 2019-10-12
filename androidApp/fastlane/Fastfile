@@ -1,0 +1,11 @@
+default_platform(:android)
+
+platform :android do
+  desc "Run Android unit tests"
+  lane :tests do
+    gradle(
+      task: "test",
+      gradle_path: "../gradlew"
+    )
+  end
+end

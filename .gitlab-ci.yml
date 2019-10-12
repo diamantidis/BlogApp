@@ -1,0 +1,108 @@
+stages:
+  - Setup
+  - Dependencies
+  - Code Styling
+  - Tests
+
+variables:
+  LC_ALL: "en_US.UTF-8"
+  LANG: "en_US.UTF-8"
+
+cache:
+  key: ${CI_PROJECT_ID}
+  paths:
+    - iosApp/Pods/
+
+setup: 
+  stage: Setup
+  script:
+    - gem install bundler
+    - bundle install
+  tags:
+    - kmp
+
+ios:dependencies:
+  dependencies:
+    - setup
+  stage: Dependencies
+  script:
+    - cd iosApp && bundle exec pod install
+  tags:
+    - ios
+  only:
+    changes:
+      - iosApp/**/*
+      - shared/**/*
+
+ios:lint:
+  dependencies:
+    - ios:dependencies
+  stage: Code Styling
+  script:
+    - cd iosApp && bundle exec fastlane ios lint
+  tags:
+    - ios
+  only:
+    changes:
+      - iosApp/**/*
+      - shared/**/*
+
+android:lint:
+  stage: Code Styling
+  script:
+    - ./gradlew clean androidApp:detekt
+  tags:
+    - android
+  only:
+    changes:
+      - androidApp/**/*
+      - shared/**/*
+
+shared:lint:
+  stage: Code Styling
+  script:
+    - ./gradlew clean shared:detekt
+  tags:
+    - kmp
+  only:
+    changes:
+      - shared/**/*
+
+ios:unit_tests:
+  dependencies:
+    - ios:lint
+  stage: Tests
+  script:
+    - cd iosApp && bundle exec fastlane ios tests
+  tags:
+    - ios
+  only:
+    changes:
+      - iosApp/**/*
+      - shared/**/*
+
+android:unit_tests:
+  dependencies:
+    - android:lint
+  stage: Tests
+  script:
+    - cd androidApp && bundle exec fastlane android tests
+  tags:
+    - android
+  only:
+    changes:
+      - androidApp/**/*
+      - shared/**/*
+
+shared:unit_tests:
+  dependencies:
+    - shared:lint
+  stage: Tests
+  script:
+    - ./gradlew clean shared:test
+    - ./gradlew clean shared:iosTest
+  tags:
+    - kmp
+  only:
+    changes:
+      - shared/**/*
