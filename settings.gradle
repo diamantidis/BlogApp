@@ -1,3 +1,4 @@
 rootProject.name = 'KMP_base'
 
+enableFeaturePreview('GRADLE_METADATA')
 include ':shared', ':androidApp'
